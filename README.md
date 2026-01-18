@@ -1,9 +1,20 @@
 
 ```markdown
-# Jenkins Shared Libraries
+# Jenkins Shared Library for CI/CD Pipelines
 
-This repository contains reusable Jenkins Pipeline functions implemented using the Jenkins Shared Library feature.  
-These functions help to modularize and clean up CI/CD pipelines for Docker-based applications.
+This repository provides a modular Jenkins Shared Library to simplify CI/CD pipelines for Docker-based applications.  
+It enables reuse of common pipeline steps such as cloning repositories, building Docker images, pushing to DockerHub, and basic testing.
+
+---
+
+## 📦 Overview
+
+This shared library helps to:
+
+- Keep Jenkinsfiles clean and readable
+- Avoid duplicate pipeline logic
+- Maintain centralized CI/CD functions
+- Make pipelines easier to update and scale
 
 ---
 
@@ -13,23 +24,18 @@ These functions help to modularize and clean up CI/CD pipelines for Docker-based
 
 jenkins-shared-libraries/
 └── vars/
-├── clone.groovy
-├── docker_build.groovy
-├── docker_push.groovy
-└── hello.groovy
+├── clone.groovy            # Clone source code from Git repository
+├── docker_build.groovy     # Build Docker image
+├── docker_push.groovy      # Push Docker image to DockerHub
+└── hello.groovy            # Test greeting helper
 
 ```
 
-- `clone.groovy` → Clones source code from Git repository
-- `docker_build.groovy` → Builds Docker image
-- `docker_push.groovy` → Pushes Docker image to DockerHub
-- `hello.groovy` → Simple test function for greetings
-
 ---
 
-## 🚀 How to Use in Jenkins Pipeline
+## 🚀 Usage in Jenkins
 
-### 1. Configure Shared Library in Jenkins
+### **1. Configure Shared Library**
 
 Go to:
 
@@ -39,29 +45,30 @@ Manage Jenkins → Configure System → Global Pipeline Libraries
 
 ````
 
-Add:
+Add the library as:
 
-- Library Name: **Shared**
-- Default Version: **main**
-- Retrieval Method: **Modern SCM**
-- SCM: **Git**
-- Repository URL:  
-  `https://github.com/<username>/jenkins-shared-libraries.git`
+| Field | Value |
+|---|---|
+| Library Name | Shared |
+| Default Version | main |
+| Retrieval Method | Modern SCM |
+| SCM | Git |
+| Repository URL | https://github.com/<username>/jenkins-shared-libraries.git |
 
 ---
 
-### 2. Import & Use in Jenkinsfile
+### **2. Import & Use in Jenkinsfile**
 
-Example Jenkinsfile:
+Example:
 
 ```groovy
 @Library("Shared") _
 
 pipeline {
-    agent { label "vinod" }
+    agent any
 
     stages {
-        stage("Hello") {
+        stage("Greeting") {
             steps {
                 script {
                     hello()
@@ -80,15 +87,15 @@ pipeline {
         stage("Build Docker Image") {
             steps {
                 script {
-                    docker_build("notes-app", "latest", "username")
+                    docker_build("notes-app", "latest", "dockerhubUser")
                 }
             }
         }
 
-        stage("Push Image") {
+        stage("Push Docker Image") {
             steps {
                 script {
-                    docker_push("notes-app", "latest", "username")
+                    docker_push("notes-app", "latest", "dockerhubUser")
                 }
             }
         }
@@ -98,20 +105,24 @@ pipeline {
 
 ---
 
-## 🧩 Requirements
+## 🔑 Requirements
 
-* Jenkins 2.0+
-* Docker installed on build agent
-* Credentials configured for DockerHub
-* GitHub repository configured for source code
+* Jenkins 2.x+
+* Docker installed on Jenkins agent
+* Jenkins user added to `docker` group
+* DockerHub credentials stored in Jenkins Credentials
+* GitHub repository access (public or private)
+* Optional GitHub Webhook for automatic pipeline triggers
 
 ---
 
-## 🎯 Advantages of Using Shared Libraries
+## 🎯 Benefits
 
-✔ Removes duplicate pipeline code
-✔ Centralized CI/CD logic
-✔ Cleaner and easier Jenkinsfiles
-✔ Reusable Docker functions
-✔ Faster pipeline updates across projects
+✔ Clean and modular pipelines
+✔ Easy to extend and maintain
+✔ Reusable across multiple projects
+✔ Works well for Docker CI/CD workflows
+✔ Encourages DevOps best practices
+
+---
 
