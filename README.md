@@ -1,13 +1,13 @@
 
 ```markdown
-# Jenkins Shared Library for CI/CD Pipelines
+Jenkins Shared Library for CI/CD Pipelines
 
 This repository provides a modular Jenkins Shared Library to simplify CI/CD pipelines for Docker-based applications.  
 It enables reuse of common pipeline steps such as cloning repositories, building Docker images, pushing to DockerHub, and basic testing.
 
 ---
 
-## 📦 Overview
+📦 Overview
 
 This shared library helps to:
 
@@ -18,7 +18,7 @@ This shared library helps to:
 
 ---
 
-## 📁 Repository Structure
+📁 Repository Structure
 
 ```
 
