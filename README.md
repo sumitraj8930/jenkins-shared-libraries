@@ -1,128 +1,87 @@
 
-```markdown
-Jenkins Shared Library for CI/CD Pipelines
+# Jenkins Shared Libraries
 
-This repository provides a modular Jenkins Shared Library to simplify CI/CD pipelines for Docker-based applications.  
-It enables reuse of common pipeline steps such as cloning repositories, building Docker images, pushing to DockerHub, and basic testing.
+This repository contains reusable functions for Jenkins pipelines. The goal is to make CI/CD pipelines cleaner, modular, and easier to maintain.
 
----
-
-📦 Overview
-
-This shared library helps to:
-
-- Keep Jenkinsfiles clean and readable
-- Avoid duplicate pipeline logic
-- Maintain centralized CI/CD functions
-- Make pipelines easier to update and scale
-
----
-
-📁 Repository Structure
+## 📁 Folder Structure
 
 ```
-
 jenkins-shared-libraries/
-└── vars/
-├── clone.groovy            # Clone source code from Git repository
-├── docker_build.groovy     # Build Docker image
-├── docker_push.groovy      # Push Docker image to DockerHub
-└── hello.groovy            # Test greeting helper
-
+ └── vars/
+      ├── clone.groovy
+      ├── docker_build.groovy
+      ├── docker_push.groovy
+      └── hello.groovy
 ```
 
----
+## 🧩 Functions Overview
 
-## 🚀 Usage in Jenkins
+### **1. clone.groovy**
 
-### **1. Configure Shared Library**
+* Used for cloning repositories
+* Supports custom Git URLs and branches
 
-Go to:
+### **2. docker_build.groovy**
 
-```
+* Builds Docker images using Docker CLI
+* Allows passing tags and build context
 
-Manage Jenkins → Configure System → Global Pipeline Libraries
+### **3. docker_push.groovy**
 
-````
+* Logs into Docker registry
+* Pushes images to registry
+* Can be used with private or public registries
 
-Add the library as:
+### **4. hello.groovy**
 
-| Field | Value |
-|---|---|
-| Library Name | Shared |
-| Default Version | main |
-| Retrieval Method | Modern SCM |
-| SCM | Git |
-| Repository URL | https://github.com/<username>/jenkins-shared-libraries.git |
+* Simple test function for verifying shared library setup
 
----
-
-### **2. Import & Use in Jenkinsfile**
-
-Example:
+## 🚀 Example Usage in Jenkinsfile
 
 ```groovy
-@Library("Shared") _
+@Library('jenkins-shared-libraries') _
 
 pipeline {
     agent any
 
     stages {
-        stage("Greeting") {
+        stage('Clone Repo') {
             steps {
-                script {
-                    hello()
-                }
+                clone(repo: 'https://github.com/user/app.git', branch: 'main')
             }
         }
 
-        stage("Clone") {
+        stage('Build Docker Image') {
             steps {
-                script {
-                    clone("https://github.com/user/repo.git", "main")
-                }
+                docker_build(imageName: 'myapp:latest', context: '.')
             }
         }
 
-        stage("Build Docker Image") {
+        stage('Push Docker Image') {
             steps {
-                script {
-                    docker_build("notes-app", "latest", "dockerhubUser")
-                }
+                docker_push(image: 'myapp:latest', registry: 'docker.io', credentialsId: 'docker-creds')
             }
         }
 
-        stage("Push Docker Image") {
+        stage('Test Library') {
             steps {
-                script {
-                    docker_push("notes-app", "latest", "dockerhubUser")
-                }
+                hello()
             }
         }
     }
 }
-````
+```
 
----
+## 🎯 Why Use Shared Libraries?
 
-## 🔑 Requirements
+* Avoid duplicate code across pipelines
+* Centralized updates for all jobs
+* Cleaner Jenkinsfiles
+* Easier CI/CD scaling in teams
 
-* Jenkins 2.x+
-* Docker installed on Jenkins agent
-* Jenkins user added to `docker` group
-* DockerHub credentials stored in Jenkins Credentials
-* GitHub repository access (public or private)
-* Optional GitHub Webhook for automatic pipeline triggers
+## 🛠 Requirements
 
----
-
-## 🎯 Benefits
-
-✔ Clean and modular pipelines
-✔ Easy to extend and maintain
-✔ Reusable across multiple projects
-✔ Works well for Docker CI/CD workflows
-✔ Encourages DevOps best practices
-
----
+* Jenkins with Shared Libraries enabled
+* Docker installed (for build/push flows)
+* Valid Docker registry credentials
 
